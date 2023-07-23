@@ -10,5 +10,3 @@ local Options = {
 };
 loadstring(game:HttpGet('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/Main.lua'))(Options);
 ```
-## Preview
-![](https://cdn.discordapp.com/attachments/1112061590158717021/1132772327243907204/ApplicationFrameHost_hbM1kTSm2Z.gif)
