@@ -11,4 +11,4 @@ local Options = {
 loadstring(game:HttpGet('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/Main.lua'))(Options);
 ```
 ## Preview
-![](https://r2.e-z.host/6ccd33db-51dc-4b2e-b9ac-a2ccf24bcd62/2hxzy4g9.gif)
+![](https://cdn.discordapp.com/attachments/1112061590158717021/1132772327243907204/ApplicationFrameHost_hbM1kTSm2Z.gif)
