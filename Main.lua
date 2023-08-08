@@ -5,6 +5,7 @@ local Find = function(Table) for i,v in pairs(Table or {}) do if typeof(v) == 't
 local Options = Find(({...})) or {
     Keybind = 'Home',
     Language = 'pt-br',
+    Tempo = 2.5,
     Rainbow = false,
 }
 local Version = '0.1'
@@ -87,7 +88,7 @@ local function StartThread()
 	Threading = task.spawn(function()
 		for i = Config.Start, Config.End do
 			DoJJ(i, Config["Prefix"], Settings["Jump"])
-			task.wait(2.5)
+			task.wait(Options.Tempo)
 		end
 		FinishedThread = true
 		EndThread()
@@ -111,13 +112,11 @@ UIElements["Circle"].MouseButton1Click:Connect(function()
 		Settings["Jump"] = false
 		Toggled = false
         TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.22, 0, 0.5, 0) }):Play()
-		--UIElements["Circle"]:TweenPosition(UDim2.new(0.22,0,0.5,0),'Out','Quad',0.3,true,nil)
 		TweenService:Create(UIElements["Slide"], TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(20, 20, 20) }):Play()
 	else
 		Settings["Jump"] = true
 		Toggled = true
         TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.772, 0, 0.5, 0) }):Play()
-        --UIElements["Circle"]:TweenPosition(UDim2.new(0.772,0,0.5,0),'Out','Quad',0.3,true,nil)
 		TweenService:Create(UIElements["Slide"], TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(37, 150, 255) }):Play()
 	end
 end)
