@@ -3,12 +3,12 @@
 -- ══════════════════════════════════════
 local Find = function(Table) for i,v in pairs(Table or {}) do if typeof(v) == 'table' then return v end; end; end
 local Options = Find(({...})) or {
-    Keybind = 'Home',
-    Language = 'pt-br',
-    Tempo = 2.5,
-    Rainbow = false,
+	Keybind = 'Home',
+	Language = 'pt-br',
+	Tempo = 2.5,
+	Rainbow = false,
 }
-local Version = '0.1'
+local Version = '0.2'
 local Parent = game:GetService('CoreGui');
 local require = function(Name)
 	return loadstring(game:HttpGet(('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua'):format(Name)))()
@@ -68,7 +68,8 @@ end
 local function DoJJ(n, prefix, jump)
 	local extenso = Extenso:Convert(n)
 	local prefix = prefix and prefix or ''
-	RemoteChat:FireServer(('%s'):format(extenso .. prefix), 'All')
+	RemoteChat:Send(('%s'):format(extenso .. prefix))
+	--RemoteChat:FireServer(('%s'):format(extenso .. prefix), 'All')
 	if jump then Char:Jump() end
 end
 
@@ -111,12 +112,12 @@ UIElements["Circle"].MouseButton1Click:Connect(function()
 	if Toggled then
 		Settings["Jump"] = false
 		Toggled = false
-        TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.22, 0, 0.5, 0) }):Play()
+		TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.22, 0, 0.5, 0) }):Play()
 		TweenService:Create(UIElements["Slide"], TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(20, 20, 20) }):Play()
 	else
 		Settings["Jump"] = true
 		Toggled = true
-        TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.772, 0, 0.5, 0) }):Play()
+		TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.772, 0, 0.5, 0) }):Play()
 		TweenService:Create(UIElements["Slide"], TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(37, 150, 255) }):Play()
 	end
 end)
