@@ -5,6 +5,7 @@
 ```lua
 local Options = {
     Keybind = 'Home', --> Keybind para mostrar/esconder a UI, mais informações sobre KeyCode: https://create.roblox.com/docs/reference/engine/enums/KeyCode
+    Tempo = 2.5, --> Tempo para enviar mensagem.
     Language = 'pt-br', --> Alterar a linguagem dos textos, disponívels: pt-br, en-us
     Rainbow = false, --> Deixar a UI mais colorida (true/false)
 };
