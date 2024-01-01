@@ -10,7 +10,7 @@ local Options = {
 
     Language = {
         UI = 'pt-br', --> Alterar a linguagem da UI, disponívels: pt-br, en-us
-        Words = 'pt-br' --> Alterar a linguagem dos número em extenso, disponívels: pt-br, en-us
+        Words = 'pt-br' --> Alterar a linguagem dos número em extenso, disponívels: pt-br, en-us, es-es
     },
 };
 loadstring(game:HttpGet('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/Main.lua'))(Options);
