@@ -4,11 +4,16 @@
 local Find = function(Table) for i,v in pairs(Table or {}) do if typeof(v) == 'table' then return v end; end; end
 local Options = Find(({...})) or {
 	Keybind = 'Home',
-	Language = 'pt-br',
+
+	Language = {
+		UI = 'pt-br',
+		Words = 'pt-br'
+	},
+
 	Tempo = 2.5,
 	Rainbow = false,
 }
-local Version = '0.2'
+local Version = '1.4'
 local Parent = game:GetService('CoreGui');
 local require = function(Name)
 	return loadstring(game:HttpGet(('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua'):format(Name)))()
@@ -25,9 +30,12 @@ local LP = Players.LocalPlayer
 --              Modules				
 -- ══════════════════════════════════════
 local UI = require("UI")
+local Notification = require("Notification")
+
+local Extenso = require("Modules/Extenso")
 local Character = require("Modules/Character")
 local RemoteChat = require("Modules/RemoteChat")
-local Extenso = require("Modules/Extenso")
+local Request = require("Modules/Request")
 
 -- ══════════════════════════════════════
 --  	        Constants				
@@ -65,44 +73,71 @@ local function ListenChange(Obj)
 	end)
 end
 
-local function DoJJ(n, prefix, jump)
-	local extenso = Extenso:Convert(n)
-	local prefix = prefix and prefix or ''
-	RemoteChat:Send(('%s'):format(extenso .. prefix))
-	--RemoteChat:FireServer(('%s'):format(extenso .. prefix), 'All')
-	if jump then Char:Jump() end
-end
-
-local function EndThread()
+local function EndThread(success)
 	if Threading then
 		if not FinishedThread then task.cancel(Threading) end
 		Threading = nil
 		FinishedThread = false
 		Settings["Started"] = false
+		Notification:Notify(success and 6 or 12, nil, nil, nil)
+	end
+end
+
+local function DoJJ(n, prefix, jump)
+	local success, extenso = Extenso:Convert(n)
+	local prefix = prefix and prefix or ''
+	if success then
+		if jump then Char:Jump() end
+		RemoteChat:Send(('%s'):format(extenso .. prefix))
 	end
 end
 
 local function StartThread()
 	local Config = Settings.Config;
 	if not Config["Start"] or not Config["End"] then return end
-	if Threading then EndThread() return end
+	if Threading then EndThread(false) return end
+	Notification:Notify(5, nil, nil, nil)
 	Threading = task.spawn(function()
 		for i = Config.Start, Config.End do
-			DoJJ(i, Config["Prefix"], Settings["Jump"])
-			task.wait(Options.Tempo)
+			task.spawn(DoJJ, i, Config["Prefix"], Settings["Jump"])
+			print(i, Config.End, typeof(Config.End), i ~= Config.End)
+			if i ~= tonumber(Config.End) then task.wait(Options.Tempo) end;
 		end
 		FinishedThread = true
-		EndThread()
+		EndThread(true)
 	end)
 end
+
+local function GetLanguage(Lang)
+	local Success, Result = pcall(function()
+		return require(('I18N/%s'):format(Lang))
+	end)
+	warn('LANG:', Success, Result)
+	if Success then
+		return Result
+	end
+	return {}
+end
+
+local function MigrateSettings()
+	local Lang = Options['Language'];
+	if typeof(Lang) == 'string' then
+		Options['Language'] = { UI = Lang, Words = Lang };
+	end
+end
+
+MigrateSettings()
 
 -- ══════════════════════════════════════
 --                Main				
 -- ══════════════════════════════════════
 UI:SetVersion(Version)
-UI:SetLanguage(Options.Language)
+UI:SetLanguage(Options.Language.UI)
 UI:SetRainbow(Options.Rainbow)
 UI:SetParent(Parent)
+
+Notification:SetParent(UI.getUI())
+Extenso:SetLang(GetLanguage(Options.Language.Words))
 
 for i,v in pairs(UIElements["Box"]) do
 	ListenChange(v)
@@ -129,6 +164,9 @@ UIElements["Play"].MouseButton1Up:Connect(function()
 		StartThread()
 	else
 		Settings["Started"] = false
-		EndThread()
+		EndThread(false)
 	end
 end)
+
+Notification:SetupJJs()
+Request:Post('https://scripts.zvyz.repl.co/api/count')
