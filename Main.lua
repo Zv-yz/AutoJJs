@@ -112,7 +112,6 @@ local function GetLanguage(Lang)
 	local Success, Result = pcall(function()
 		return require(('I18N/%s'):format(Lang))
 	end)
-	warn('LANG:', Success, Result)
 	if Success then
 		return Result
 	end
