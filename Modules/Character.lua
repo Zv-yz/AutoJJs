@@ -32,7 +32,7 @@ function module:ChangeHumanoidProp(name, val)
 	return true, nil;
 end
 
-function module:ChangeHumanoidState(enum: EnumItem)
+function module:ChangeHumanoidState(enum: Enum)
 	local Humanoid = self:GetHumanoid();
 	if not Humanoid then return warn('[CHARACTER_MODULE]: Invalid humanoid?') end
 	local s,e = pcall(function()
