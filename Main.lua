@@ -168,4 +168,4 @@ UIElements["Play"].MouseButton1Up:Connect(function()
 end)
 
 Notification:SetupJJs()
-Request:Post('https://scripts.zvyz.repl.co/api/count')
+Request:Post('https://scripts-zvyz.glitch.me/api/count')
