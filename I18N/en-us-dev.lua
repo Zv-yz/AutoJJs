@@ -16,7 +16,7 @@ return {
 		[6] = 'SIXTY', [7] = 'SEVENTY', [8] = 'EIGHTY', [9] = 'NINETY',
 	};
 	
-	Hundred = 'ONE HUNDRED';
+	Hundred = 'ONE HUNDRED'; 
 
 	Hundreds = {
 		[1] = 'ONE HUNDRED', [2] = 'TWO HUNDRED', [3] = 'THREE HUNDRED', [4] = 'FOUR HUNDRED', [5] = 'FIVE HUNDRED',
