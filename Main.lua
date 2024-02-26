@@ -10,6 +10,8 @@ local Options = Find(({...})) or {
 		Words = 'pt-br'
 	},
 
+	Experiments = { },
+
 	Tempo = 2.5,
 	Rainbow = false,
 }
@@ -87,8 +89,19 @@ local function DoJJ(n, prefix, jump)
 	local success, extenso = Extenso:Convert(n)
 	local prefix = prefix and prefix or ''
 	if success then
+		--> Em minha opiniao, esse codigo ta horrivel - Zv_yz
 		if jump then Char:Jump() end
-		RemoteChat:Send(('%s'):format(extenso .. prefix))
+		if table.find(Options.Experiments, 'hell_jacks_2024_02-dev') then
+			for i = 1, #extenso do
+				if jump then Char:Jump() end
+				RemoteChat:Send(('%s'):format(extenso:sub(i, i)))
+				task.wait(Options.Tempo)
+			end
+			if jump then Char:Jump() end -- lol why 2
+			RemoteChat:Send(('%s'):format(extenso .. prefix))
+		else
+			RemoteChat:Send(('%s'):format(extenso .. prefix))
+		end
 	end
 end
 
@@ -99,8 +112,12 @@ local function StartThread()
 	Notification:Notify(5, nil, nil, nil)
 	Threading = task.spawn(function()
 		for i = Config.Start, Config.End do
-			task.spawn(DoJJ, i, Config["Prefix"], Settings["Jump"])
-			print(i, Config.End, typeof(Config.End), i ~= Config.End)
+			--> bro wth, this code looks so bad :sob: - Zv_yz
+			if table.find(Options.Experiments, 'hell_jacks_2024_02-dev') then
+				DoJJ(i, Config["Prefix"], Settings["Jump"])
+			else
+				task.spawn(DoJJ, i, Config["Prefix"], Settings["Jump"])
+			end
 			if i ~= tonumber(Config.End) then task.wait(Options.Tempo) end;
 		end
 		FinishedThread = true
