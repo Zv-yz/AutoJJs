@@ -137,6 +137,10 @@ end
 
 local function MigrateSettings()
 	local Lang = Options['Language'];
+	local Experiments = Options['Experiments'];
+	if not Experiments then
+		Options['Experiments'] = {};
+	end
 	if typeof(Lang) == 'string' then
 		Options['Language'] = { UI = Lang, Words = Lang };
 	end
