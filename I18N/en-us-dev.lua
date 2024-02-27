@@ -26,4 +26,14 @@ return {
 	Thousands = {
 		[1] = 'THOUSAND', [2] = 'MILLION', [3] = 'BILLION',
 	};
+
+	Notification = {
+		default = 'Made by Zv_yz, join our Discord: https://discord.gg/7NWVNH2cwj',
+		negative = 'The number cannot be negative.',
+		limit = 'Number limit reached.',
+		started = 'Successfully started.',
+		finished = 'Successfully finished.',
+		failed = 'The task was not completed.',
+		experimental = 'You\'re running experimental modules!'
+	};
 }

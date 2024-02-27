@@ -26,4 +26,14 @@ return {
 	Thousands = {
 		[1] = 'MIL', [2] = 'MILLONES', [3] = 'MIL MILLONES',
 	};
+
+	Notification = {
+		default = 'Hecho por Zv_yz, únete a nuestro Discord: https://discord.gg/7NWVNH2cwj',
+		negative = 'El número no puede ser negativo.',
+		limit = 'Límite de número alcanzado.',
+		started = 'Iniciado con éxito.',
+		finished = 'Finalizado con éxito.',
+		failed = 'La tarea no se completó.',
+		experimental = '¡Estás ejecutando módulos experimentales!'
+	};
 }
