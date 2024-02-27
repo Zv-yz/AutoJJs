@@ -15,7 +15,7 @@ local Options = Find(({...})) or {
 	Tempo = 2.5,
 	Rainbow = false,
 }
-local Version = '1.4'
+local Version = '1.5'
 local Parent = game:GetService('CoreGui');
 local require = function(Name)
 	return loadstring(game:HttpGet(('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua'):format(Name)))()
@@ -153,6 +153,7 @@ UI:SetRainbow(Options.Rainbow)
 UI:SetParent(Parent)
 
 Notification:SetParent(UI.getUI())
+Notification:SetLang(GetLanguage(Options.Language.UI))
 Extenso:SetLang(GetLanguage(Options.Language.Words))
 
 for i,v in pairs(UIElements["Box"]) do
