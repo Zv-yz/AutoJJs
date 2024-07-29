@@ -28,7 +28,7 @@ return {
 	};
 
 	Notification = {
-		default = 'Hecho por Zv_yz, únete a nuestro Discord: https://discord.gg/7NWVNH2cwj',
+		default = 'Hecho por Zv_yz, únete a nuestro Discord: https://discord.gg/ZmJHV4yg3y',
 		negative = 'El número no puede ser negativo.',
 		limit = 'Límite de número alcanzado.',
 		started = 'Iniciado con éxito.',

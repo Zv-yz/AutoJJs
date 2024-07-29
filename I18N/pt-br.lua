@@ -28,7 +28,7 @@ return {
 	};
 
 	Notification = {
-		default = 'Feito por Zv_yz, para mais informações entre no nosso Discord: https://discord.gg/7NWVNH2cwj',
+		default = 'Feito por Zv_yz, para mais informações entre no nosso Discord: https://discord.gg/ZmJHV4yg3y',
 		negative = 'O número não pode ser negativo.',
 		limit = 'Limite de número antigido.',
 		started = 'Iniciado com sucesso.',
