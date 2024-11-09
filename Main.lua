@@ -16,7 +16,7 @@ local Options = Find(({...})) or {
 	Rainbow = false,
 }
 local Version = '1.5'
-local Parent = game:GetService('CoreGui');
+local Parent = gethui() or game:GetService('CoreGui');
 local require = function(Name)
 	return loadstring(game:HttpGet(('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua'):format(Name)))()
 end
