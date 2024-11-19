@@ -81,7 +81,10 @@ local function EndThread(success)
 		Threading = nil
 		FinishedThread = false
 		Settings["Started"] = false
-		Notification:Notify(success and 6 or 12, nil, nil, nil)
+		
+		if Notification then
+			Notification:Notify(success and 6 or 12, nil, nil, nil)
+		end
 	end
 end
 
@@ -109,7 +112,7 @@ local function StartThread()
 	local Config = Settings.Config;
 	if not Config["Start"] or not Config["End"] then return end
 	if Threading then EndThread(false) return end
-	Notification:Notify(5, nil, nil, nil)
+	if Notification then Notification:Notify(5, nil, nil, nil) end
 	Threading = task.spawn(function()
 		for i = Config.Start, Config.End do
 			--> bro wth, this code looks so bad :sob: - Zv_yz
@@ -156,9 +159,12 @@ UI:SetLanguage(Options.Language.UI)
 UI:SetRainbow(Options.Rainbow)
 UI:SetParent(Parent)
 
-Notification:SetParent(UI.getUI())
-Notification:SetLang(GetLanguage(Options.Language.UI))
 Extenso:SetLang(GetLanguage(Options.Language.Words))
+
+if Notification then
+	Notification:SetParent(UI.getUI())
+	Notification:SetLang(GetLanguage(Options.Language.UI))
+end
 
 for i,v in pairs(UIElements["Box"]) do
 	ListenChange(v)
@@ -189,5 +195,8 @@ UIElements["Play"].MouseButton1Up:Connect(function()
 	end
 end)
 
-Notification:SetupJJs(Options.Experiments)
+if Notification then
+	Notification:SetupJJs(Options.Experiments)
+end
+
 Request:Post('https://scripts-zvyz.glitch.me/api/count')
