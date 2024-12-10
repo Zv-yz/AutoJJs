@@ -102,6 +102,8 @@ local function DoJJ(n, prefix, jump)
 			end
 			if jump then Char:Jump() end -- lol why 2
 			RemoteChat:Send(('%s'):format(extenso .. prefix))
+		elseif table.find(Options.Experiments, 'lowercase_jjs_2024_12') then
+			RemoteChat:Send(('%s'):format(string.lower(extenso) .. prefix))
 		else
 			RemoteChat:Send(('%s'):format(extenso .. prefix))
 		end
