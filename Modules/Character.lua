@@ -1,75 +1,98 @@
-local module = {}
-local cachefunc = {}
-module.__index = module
+local Character = {}
+local TweenService = game:GetService("TweenService")
 
-function module.new(plr)
-	local self = setmetatable({}, module)
-	self.Player = plr;
-	self.Character = (plr.Character or plr.CharacterAdded:Wait());
-	cachefunc[plr] = plr.CharacterAdded:Connect(function(char)
-		self.Character = char;
-	end)
+Character.__index = Character
+
+function Character.new(Player: Player)
+	local self = setmetatable({}, Character)
+	
+	self.Player = Player
+	self.Connections = {}
+	
+	self.Character = Player.Character or Player.CharacterAdded:Wait()
+	self.Humanoid = self.Character:WaitForChild("Humanoid", 95)
+	self.Root = self.Character:WaitForChild("HumanoidRootPart", 95)
+	
+	table.insert(self.Connections, Player.CharacterAdded:Connect(function(Char)
+		self.Character = Char
+		self.Humanoid = Char:WaitForChild("Humanoid", 95)
+		self.Root = Char:WaitForChild("HumanoidRootPart", 95)
+	end))
+	
 	return self
 end
 
-function module:GetCharacter()
-	return self.Character;
-end
-
-function module:GetHumanoid()
-	return self:GetCharacter():WaitForChild('Humanoid', 95)
-end
-
-function module:ChangeHumanoidProp(name, val)
-	local Humanoid = self:GetHumanoid();
-	if not Humanoid then return warn('[CHARACTER_MODULE]: Invalid humanoid?') end
-	local s,e = pcall(function()
-		Humanoid[name] = val
+function Character:ChangeHumanoidProp(Name, Value)
+	if not self.Humanoid then return false, "Humanoid not found" end
+	
+	local Success, Result = pcall(function()
+		self.Humanoid[Name] = Value
 	end)
-	if not s then
-		return false, e
+	
+	if not Success then
+		return false, Result
 	end
-	return true, nil;
+	
+	return true, nil
 end
 
-function module:ChangeHumanoidState(enum: Enum)
-	local Humanoid = self:GetHumanoid();
-	if not Humanoid then return warn('[CHARACTER_MODULE]: Invalid humanoid?') end
-	local s,e = pcall(function()
-		Humanoid:ChangeState(enum)
+function Character:ChangeHumanoidState(Enum: Enum)
+	if not self.Humanoid then return false, "Humanoid not found" end
+	
+	local Success, Result = pcall(function()
+		self.Humanoid:ChangeState(Enum)
 	end)
-	if not s then
-		return false, e
+	
+	if not Success then
+		return false, Result
 	end
-	return true, nil;
+	
+	return true, nil
 end
 
--- START: Humanoid Changes
+--> START: Humanoid Changes
 
-function module:ChangeWalkSpeed(val: number)
-	local result, _error = self:ChangeHumanoidProp('WalkSpeed', val)
-	if not result then
-		warn('[CHARACTER_MODULE]: Error setting "WalkSpeed":\n' .. _error)
-		return
+function Character:ChangeWalkSpeed(Value: number) -- Debug.
+	local Success, Result = self:ChangeHumanoidProp("WalkSpeed", Value)
+	
+	if not Success then
+		return false, string.format("Error setting \"WalkSpeed\": %s", Result)
 	end
+	
+	return true, nil
 end
 
-function module:Jump()
-	local result, _error = self:ChangeHumanoidState(Enum.HumanoidStateType.Jumping)
-	if not result then
-		warn('[CHARACTER_MODULE]: Error jumping character:\n' .. _error)
-		return
+function Character:Jump()
+	local Success, Result = self:ChangeHumanoidState(Enum.HumanoidStateType.Jumping)
+	
+	if not Success then
+		return false, string.format("Error jumping: %s", Result)
 	end
+
+	return true, nil
 end
 
--- END: Humanoid Changes
+--> END: Humanoid Changes
 
-function module:Destroy()
-	if cachefunc[self.Player] then
-		cachefunc[self.Player] = nil;
-	end
-	self.Player = nil;
-	self.Character = nil;
+function Character:GetCharacter()
+	return self.Character
 end
 
-return module
+function Character:GetHumanoid()
+	return self.Humanoid
+end
+
+function Character:Destroy()
+	for _, Connection in ipairs(self.Connections) do
+		task.spawn(Connection.Disconnect, Connection)
+	end
+	
+	for Item in self do
+		self[Item] = nil
+	end
+	
+	setmetatable(self, nil)
+end
+
+
+return Character
