@@ -1,45 +1,50 @@
-local module = {}
-local HTTPService = game:GetService('HttpService');
+local Request = {}
+local HttpService = game:GetService("HttpService");
 
-function checkHost(func)
-	local s,e = pcall(function()
-		return game[func];
+Request.__index = Request
+
+function Request:HasFunction(Name: string)
+	local Success, Result = pcall(function()
+		return game[Name]
 	end)
 	
-	if s then
-		return game[func];
+	if Success then
+		return game[Name]
 	end
 	
 	return nil
 end
 
-function getSupported(funcs)
-	local tbl = {}
-	for i,v in pairs(funcs) do
-		if typeof(v) == 'function' then
-			table.insert(tbl, true)
+function Request:IsSupported(Functions)
+	local Result = false
+	
+	for _, Function in pairs(Functions) do
+		if typeof(Function) == "function" then
+			Result = true
 		end
 	end
-	return tbl
+	
+	return Result
 end
 
-local functions = {
-	request = (request or http_request) or (http and http.request) or (syn and syn.request);
-	post = checkHost('HttpPost');
-}
+function Request:Post(Url, Data)
+    local Functions = {
+        Request = (request or http_request) or (http and http.request) or (syn and syn.request);
+        Post = self:HasFunction("HttpPost");
+    }
 
-function module:Post(url, data)
-	if #getSupported(functions) == 0 then return 'not supported' end
-	if functions.request then
-		return functions.request({
-			Url = url,
-			Method = 'POST',
-			Headers = { ['Content-Type'] = 'application/json' },
-			Body = HTTPService:JSONEncode(data or {})
+	if not self:IsSupported(Functions) then return "Not Supported" end
+	
+	if Functions.Request then
+		return Functions.Request({
+			Url = Url,
+			Method = "POST",
+			Headers = { ["Content-Type"] = "application/json" },
+			Body = HttpService:JSONEncode(Data or {})
 		})
-	else
-		return functions.post(functions.post, url, HTTPService:JSONEncode(data or {}))
+	elseif Functions.Post then
+		return Functions.Post(Functions.Post, Url, HttpService:JSONEncode(Data))
 	end
 end
 
-return module
+return setmetatable({}, Request)
