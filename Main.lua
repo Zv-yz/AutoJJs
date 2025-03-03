@@ -1,13 +1,13 @@
 -- ══════════════════════════════════════
 --               Core				
 -- ══════════════════════════════════════
-local Find = function(Table) for i,v in pairs(Table or {}) do if typeof(v) == 'table' then return v end; end; end
+local Find = function(Table) for _, Item in pairs(Table or {}) do if typeof(Item) == "table" then return Item end; end; end
 local Options = Find(({...})) or {
-	Keybind = 'Home',
+	Keybind = "Home",
 
 	Language = {
-		UI = 'pt-br',
-		Words = 'pt-br'
+		UI = "pt-br",
+		Words = "pt-br"
 	},
 
 	Experiments = { },
@@ -15,17 +15,18 @@ local Options = Find(({...})) or {
 	Tempo = 2.5,
 	Rainbow = false,
 }
-local Version = '1.5'
-local Parent = gethui() or game:GetService('CoreGui');
+
+local Version = "2.0"
+local Parent = gethui() or game:GetService("CoreGui");
 local require = function(Name)
-	return loadstring(game:HttpGet(('https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua'):format(Name)))()
+	return loadstring(game:HttpGet(string.format("http://localhost/%s.lua", Name)))()
 end
 
 -- ══════════════════════════════════════
 --              Services				
 -- ══════════════════════════════════════
-local TweenService = game:GetService('TweenService')
-local Players = game:GetService('Players')
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 
 -- ══════════════════════════════════════
@@ -44,14 +45,18 @@ local Request = require("Modules/Request")
 -- ══════════════════════════════════════
 local Char = Character.new(LP)
 local UIElements = UI.UIElements;
+local Connections = {};
 
 local Threading;
 local FinishedThread = false;
 local Toggled = false;
+
 local Settings = {
-	Keybind = Options.Keybind or 'Home',
+	Keybind = Options.Keybind or "Home",
+	
 	Started = false,
 	Jump = false,
+	
 	Config = {
 		Start = nil,
 		End = nil,
@@ -60,94 +65,139 @@ local Settings = {
 }
 
 -- ══════════════════════════════════════
+--              Methods				
+-- ══════════════════════════════════════
+
+local Methods = {
+	["Normal"] = function(Message: string, Prefix: string)
+		if Settings["Jump"] then
+			Char:Jump()
+		end
+		
+		RemoteChat:Send(string.format("%s%s", Message, Prefix))
+	end,
+	
+	["Lowercase"] = function(Message: string, Prefix: string)
+		if Settings["Jump"] then
+			Char:Jump()
+		end
+		
+		RemoteChat:Send(string.format("%s%s", string.lower(Message), Prefix))
+	end,
+	
+	["HJ"] = function(Message: string, Prefix: string)
+		for I = 1, #Message do
+			if Settings["Jump"] then
+				Char:Jump()
+			end
+			
+			RemoteChat:Send(string.format("%s%s", string.sub(Message, I, I), Prefix))
+			task.wait(Options.Tempo)
+		end
+		
+		if Settings["Jump"] then
+			Char:Jump()
+		end
+		
+		RemoteChat:Send(string.format("%s%s", Message, Prefix))
+	end,
+}
+
+-- ══════════════════════════════════════
 --              Functions				
 -- ══════════════════════════════════════
-local function ListenChange(Obj)
-	if Obj:GetAttribute('OnlyNumber') then
-		Obj:GetPropertyChangedSignal('Text'):Connect(function()
-			Obj.Text = Obj.Text:gsub("[^%d]", "")
-		end)
+
+local function Listen(Name, Element)
+	if Element:GetAttribute("IntBox") then
+		table.insert(Connections, Element:GetPropertyChangedSignal("Text"):Connect(function()
+			Element.Text = string.gsub(Element.Text, "[^%d]", "")
+		end))
 	end
-	Obj.FocusLost:Connect(function()
-		local CurrentText = Obj.Text
+	
+	table.insert(Connections, Element.FocusLost:Connect(function()
+		local CurrentText = Element.Text
 		if not CurrentText or string.match(CurrentText, "^%s*$") then return end
-		Settings.Config[Obj.Parent.Name] = Obj.Text
-	end)
+		Settings.Config[Name] = Element.Text
+	end))
 end
 
-local function EndThread(success)
+local function EndThread(Success)
 	if Threading then
-		if not FinishedThread then task.cancel(Threading) end
+		if not FinishedThread then
+			task.cancel(Threading)
+		end
+		
 		Threading = nil
 		FinishedThread = false
 		Settings["Started"] = false
 		
-		if Notification then
-			Notification:Notify(success and 6 or 12, nil, nil, nil)
-		end
+		Notification:Notify(Success and 6 or 12, nil, nil, nil)
 	end
 end
 
-local function DoJJ(n, prefix, jump)
-	local success, extenso = Extenso:Convert(n)
-	local prefix = prefix and prefix or ''
-	if success then
-		--> Em minha opiniao, esse codigo ta horrivel - Zv_yz
-		if jump then Char:Jump() end
-		if table.find(Options.Experiments, 'hell_jacks_2024_02-dev') then
-			for i = 1, #extenso do
-				if jump then Char:Jump() end
-				RemoteChat:Send(('%s'):format(extenso:sub(i, i)))
-				task.wait(Options.Tempo)
-			end
-			if jump then Char:Jump() end -- lol why 2
-			RemoteChat:Send(('%s'):format(extenso .. prefix))
-		elseif table.find(Options.Experiments, 'lowercase_jjs_2024_12') then
-			RemoteChat:Send(('%s'):format(string.lower(extenso) .. prefix))
-		else
-			RemoteChat:Send(('%s'):format(extenso .. prefix))
-		end
+local function DoJJ(Name: string, Number: number, Prefix: string)
+	local Success: boolean, String: string? = Extenso:Convert(Number)
+	local Prefix = Prefix and Prefix or ""
+	
+	local Method: (String: string, Prefix: string) -> ()? = Methods[Name]
+	
+	if not Method then
+		Notification:Notify(12, nil, nil, nil)
+	end
+	
+	if Success then
+		Method(String, Prefix)
 	end
 end
 
 local function StartThread()
 	local Config = Settings.Config;
+	
 	if not Config["Start"] or not Config["End"] then return end
 	if Threading then EndThread(false) return end
-	if Notification then Notification:Notify(5, nil, nil, nil) end
+	
+	local Method = 
+		table.find(Options.Experiments, "hell_jacks_2024_02-dev") and "HJ" or
+		table.find(Options.Experiments, "lowercase_jjs_2024_12") and "Lowercase" or
+		"Normal"
+	
+	Notification:Notify(5, nil, nil, nil)
 	Threading = task.spawn(function()
-		for i = Config.Start, Config.End do
-			--> bro wth, this code looks so bad :sob: - Zv_yz
-			if table.find(Options.Experiments, 'hell_jacks_2024_02-dev') then
-				DoJJ(i, Config["Prefix"], Settings["Jump"])
-			else
-				task.spawn(DoJJ, i, Config["Prefix"], Settings["Jump"])
+		for Amount = Config.Start, Config.End do
+			DoJJ(Method, Amount, Config["Prefix"])
+			
+			if Amount ~= tonumber(Config.End) then
+				task.wait(Options.Tempo)
 			end
-			if i ~= tonumber(Config.End) then task.wait(Options.Tempo) end;
 		end
+		
 		FinishedThread = true
 		EndThread(true)
 	end)
 end
 
-local function GetLanguage(Lang)
+local function GetLanguage(Lang: string)
 	local Success, Result = pcall(function()
-		return require(('I18N/%s'):format(Lang))
+		return require(string.format("I18N/%s", Lang))
 	end)
+	
 	if Success then
 		return Result
 	end
+	
 	return {}
 end
 
 local function MigrateSettings()
-	local Lang = Options['Language'];
-	local Experiments = Options['Experiments'];
+	local Lang = Options["Language"];
+	local Experiments = Options["Experiments"];
+	
 	if not Experiments then
-		Options['Experiments'] = {};
+		Options["Experiments"] = {};
 	end
-	if typeof(Lang) == 'string' then
-		Options['Language'] = { UI = Lang, Words = Lang };
+	
+	if typeof(Lang) == "string" then
+		Options["Language"] = { UI = Lang, Words = Lang };
 	end
 end
 
@@ -156,23 +206,22 @@ MigrateSettings()
 -- ══════════════════════════════════════
 --                Main				
 -- ══════════════════════════════════════
+local UILang, WordsLang = GetLanguage(Options.Language.UI), GetLanguage(Options.Language.Words)
+
 UI:SetVersion(Version)
-UI:SetLanguage(Options.Language.UI)
+UI:SetLanguage(UILang.UI)
 UI:SetRainbow(Options.Rainbow)
 UI:SetParent(Parent)
 
-Extenso:SetLang(GetLanguage(Options.Language.Words))
+Notification:SetParent(UI.getUI())
+Notification:SetLang(UILang.Notification) 
+Extenso:SetLang(WordsLang)
 
-if Notification then
-	Notification:SetParent(UI.getUI())
-	Notification:SetLang(GetLanguage(Options.Language.UI))
+for Name, Element in pairs(UIElements["Box"]) do
+	task.spawn(Listen, Name, Element)
 end
 
-for i,v in pairs(UIElements["Box"]) do
-	ListenChange(v)
-end
-
-UIElements["Circle"].MouseButton1Click:Connect(function()
+table.insert(Connections, UIElements["Circle"].MouseButton1Click:Connect(function()
 	if Toggled then
 		Settings["Jump"] = false
 		Toggled = false
@@ -184,9 +233,9 @@ UIElements["Circle"].MouseButton1Click:Connect(function()
 		TweenService:Create(UIElements["Circle"], TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.772, 0, 0.5, 0) }):Play()
 		TweenService:Create(UIElements["Slide"], TweenInfo.new(0.3), { BackgroundColor3 = Color3.fromRGB(37, 150, 255) }):Play()
 	end
-end)
+end))
 
-UIElements["Play"].MouseButton1Up:Connect(function()
+table.insert(Connections, UIElements["Play"].MouseButton1Up:Connect(function()
 	if not Settings.Config["Start"] or not Settings.Config["End"] then return end
 	if not Settings["Started"] then
 		Settings["Started"] = true
@@ -195,10 +244,10 @@ UIElements["Play"].MouseButton1Up:Connect(function()
 		Settings["Started"] = false
 		EndThread(false)
 	end
-end)
+end))
 
 if Notification then
-	Notification:SetupJJs(Options.Experiments)
+	Notification:SetupJJs()
 end
 
-Request:Post('https://scripts-zvyz.glitch.me/api/count')
+Request:Post("https://scripts-zvyz.glitch.me/api/count")
