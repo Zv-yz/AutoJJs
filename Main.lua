@@ -19,7 +19,7 @@ local Options = Find(({...})) or {
 local Version = "2.0"
 local Parent = gethui() or game:GetService("CoreGui");
 local require = function(Name)
-	return loadstring(game:HttpGet(string.format("http://localhost/%s.lua", Name)))()
+	return loadstring(game:HttpGet(string.format("https://raw.githubusercontent.com/Zv-yz/AutoJJs/main/%s.lua", Name)))()
 end
 
 -- ══════════════════════════════════════
