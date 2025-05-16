@@ -2,6 +2,10 @@ local RemoteChat = {}
 
 local TextChatService = game:GetService("TextChatService")
 local Methods = {
+	[Enum.ChatVersion.LegacyChatService] = function(Message: string)
+		TextChatService.TextChannels.RBXGeneral:SendAsync(Message)
+	end,
+	
 	[Enum.ChatVersion.TextChatService] = function(Message: string)
 		TextChatService.TextChannels.RBXGeneral:SendAsync(Message)
 	end,
