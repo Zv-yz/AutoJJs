@@ -21,7 +21,7 @@ function RemoteChat:Send(Message: string)
 	pcall(Methods[TextChatService.ChatVersion], Message)
 end
 
-for _, Channel in ipairs(TextChatService.TextChannels:GetChildren()) do
+for _, Channel in ipairs(TextChatService:GetDescendants()) do
 	if Channel:IsA("TextChannel") then
 		Channels[Channel.Name] = Channel
 	end
