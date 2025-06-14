@@ -84,6 +84,14 @@ local Methods = {
 		
 		RemoteChat:Send(string.format("%s%s", string.lower(Message), Prefix))
 	end,
+
+	["GJ"] = function(Message: string, Prefix: string)
+		if Settings["Jump"] then
+			Char:Jump()
+		end
+		
+		RemoteChat:Send(string.format("%s%s", string.sub(Message, 1, 1) .. string.lower(string.sub(Message, 2)), Prefix))
+	end,
 	
 	["HJ"] = function(Message: string, Prefix: string)
 		for I = 1, #Message do
@@ -159,6 +167,7 @@ local function StartThread()
 	local Method = 
 		table.find(Options.Experiments, "hell_jacks_2024_02-dev") and "HJ" or
 		table.find(Options.Experiments, "lowercase_jjs_2024_12") and "Lowercase" or
+		table.find(Options.Experiments, "grammar_jacks_2025_06") and "GJ" or
 		"Normal"
 	
 	Notification:Notify(5, nil, nil, nil)
