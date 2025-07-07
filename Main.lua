@@ -33,7 +33,7 @@ local LP = Players.LocalPlayer
 --              Modules				
 -- ══════════════════════════════════════
 local UI = require("UI")
-local Notification = require("Notification")
+--local Notification = require("Notification")
 
 local Extenso = require("Modules/Extenso")
 local Character = require("Modules/Character")
@@ -139,7 +139,7 @@ local function EndThread(Success)
 		FinishedThread = false
 		Settings["Started"] = false
 		
-		Notification:Notify(Success and 6 or 12, nil, nil, nil)
+		--Notification:Notify(Success and 6 or 12, nil, nil, nil)
 	end
 end
 
@@ -150,7 +150,7 @@ local function DoJJ(Name: string, Number: number, Prefix: string)
 	local Method: (String: string, Prefix: string) -> ()? = Methods[Name]
 	
 	if not Method then
-		Notification:Notify(12, nil, nil, nil)
+		--Notification:Notify(12, nil, nil, nil)
 	end
 	
 	if Success then
@@ -222,8 +222,8 @@ UI:SetLanguage(UILang.UI)
 UI:SetRainbow(Options.Rainbow)
 UI:SetParent(Parent)
 
-Notification:SetParent(UI.getUI())
-Notification:SetLang(UILang.Notification) 
+--Notification:SetParent(UI.getUI())
+--Notification:SetLang(UILang.Notification) 
 Extenso:SetLang(WordsLang)
 
 for Name, Element in pairs(UIElements["Box"]) do
@@ -255,8 +255,8 @@ table.insert(Connections, UIElements["Play"].MouseButton1Up:Connect(function()
 	end
 end))
 
-if Notification then
-	Notification:SetupJJs()
-end
+--if Notification then
+	--Notification:SetupJJs()
+--end
 
 Request:Post("https://scripts-zvyz.glitch.me/api/count")
