@@ -170,7 +170,7 @@ local function StartThread()
 		table.find(Options.Experiments, "grammar_jacks_2025_06") and "GJ" or
 		"Normal"
 	
-	Notification:Notify(5, nil, nil, nil)
+	--Notification:Notify(5, nil, nil, nil)
 	Threading = task.spawn(function()
 		for Amount = Config.Start, Config.End do
 			DoJJ(Method, Amount, Config["Prefix"])
