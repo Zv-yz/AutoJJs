@@ -1,5 +1,5 @@
 return {
-	Conjunction = "E";
+	Conjunction = " E ";
 	
 	Units = {
 		[0] = "ZERO", "UM", "DOIS", "TRÊS", "QUATRO", "CINCO", "SEIS", "SETE", "OITO", "NOVE"

@@ -1,5 +1,5 @@
 return {
-	Conjunction = "AND";
+	Conjunction = " AND ";
 	
 	Units = {
 		[0] = "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"
