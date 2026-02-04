@@ -259,4 +259,4 @@ end))
 	--Notification:SetupJJs()
 --end
 
-Request:Post("https://scripts-zvyz.glitch.me/api/count")
+Request:Post("https://api.zvyz.live/count/")
